@@ -2,7 +2,14 @@
 // Combines features from s3.js and YATSE for comprehensive sync and backup
 const EXTENSION_VERSION = "2.0.0";
 const PATCH_BUILD_VERSION = "s3-v2-patched-13";
-const ATTACHMENT_DIAG_ENABLED = new URLSearchParams(window.location.search).get("attachmentDiag") === "true";
+let _attachmentDiagChecked = false, _attachmentDiagValue = false;
+function isAttachmentDiagEnabled() {
+  if (!_attachmentDiagChecked) {
+    try { _attachmentDiagValue = new URLSearchParams(window.location.search).get("attachmentDiag") === "true"; } catch(e) { _attachmentDiagValue = false; }
+    _attachmentDiagChecked = true;
+  }
+  return _attachmentDiagValue;
+}
 const EXCLUDED_SETTINGS = [
   "aws-bucket",
   "aws-access-key",
@@ -3903,7 +3910,7 @@ function importDataToStorage(data) {
             timestamp: new Date().toISOString(),
           });
           // --- v13: post-restore attachment ownership diagnostics ---
-          if (ATTACHMENT_DIAG_ENABLED) {
+          if (isAttachmentDiagEnabled()) {
             setTimeout(() => {
               runAttachmentOwnershipDiag().catch(e =>
                 logToConsole("error", "[DIAG] ownership check failed", e)
