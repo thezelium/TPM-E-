@@ -15,14 +15,14 @@
     return originalDelete.call(this, key);
   };
 
-  // Disable protection after 120 seconds and restore original method
+  // Disable protection after 480 seconds and restore original method
   setTimeout(() => {
     protectionActive = false;
     IDBObjectStore.prototype.delete = originalDelete;
     console.debug(`[v14 Shield] Protection ended. ${blockedCount} blob deletion(s) blocked.`);
-  }, 120000);
+  }, 480000);
 
-  console.debug('[v14 Shield] Blob Protection active for 120s');
+  console.debug('[v14 Shield] Blob Protection active for 480s');
 })();
 // === END BLOB PROTECTION SHIELD ===
 
@@ -8207,3 +8207,4 @@ async function detectIndexedDBDuplicates() {
     return false;
   }
 }
+
